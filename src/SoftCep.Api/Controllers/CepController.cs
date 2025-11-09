@@ -29,8 +29,8 @@ public class CepController : ControllerBase
 
         // Add cache headers for successful result
         var seconds = (int)Consts.CepCacheTime.TotalSeconds;
-        Response.Headers["Cache-Control"] = $"public, max-age={seconds}";
-        Response.Headers["Expires"] = DateTime.UtcNow.Add(Consts.CepCacheTime).ToString("R");
+        Response.Headers.CacheControl = $"public, max-age={seconds}";
+        Response.Headers.Expires = DateTime.UtcNow.Add(Consts.CepCacheTime).ToString("R");
         Response.Headers["X-Cache-Duration"] = seconds.ToString();
 
         return new OkObjectResult(result);
@@ -55,8 +55,8 @@ public class CepController : ControllerBase
             return NoContent();
 
         var seconds = (int)Consts.CepCacheTime.TotalSeconds;
-        Response.Headers["Cache-Control"] = $"public, max-age={seconds}";
-        Response.Headers["Expires"] = DateTime.UtcNow.Add(Consts.CepCacheTime).ToString("R");
+        Response.Headers.CacheControl = $"public, max-age={seconds}";
+        Response.Headers.Expires = DateTime.UtcNow.Add(Consts.CepCacheTime).ToString("R");
         Response.Headers["X-Cache-Duration"] = seconds.ToString();
         
         return new OkObjectResult(result);

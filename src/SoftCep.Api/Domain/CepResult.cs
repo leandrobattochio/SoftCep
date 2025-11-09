@@ -16,6 +16,8 @@ public record CepResult(
 [Mapper]
 public static partial class CepResultMapper
 {
+#pragma warning disable RMG020
     public static partial CepResult ViaCepToCepResult(this ViaCepJsonModel result);
     public static partial List<CepResult> ViaCepToCepResults(this List<ViaCepJsonModel> result);
+#pragma warning restore RMG020
 }
