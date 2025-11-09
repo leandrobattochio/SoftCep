@@ -1,3 +1,7 @@
+[![codecov](https://codecov.io/github/leandrobattochio/SoftCep/graph/badge.svg?token=5GEA6H1B0B)](https://codecov.io/github/fiap-challenge-13soat/oficina-fase-01)
+![build pipeline](https://github.com/leandrobattochio/SoftCep/actions/workflows/main.yml/badge.svg)
+
+
 # SoftCep API
 
 API REST intermediária (camada anti-corrupção) para consultas de CEP utilizando o provedor público ViaCep, oferecendo resiliência, padronização de contrato, caching, limitação de requisições.
