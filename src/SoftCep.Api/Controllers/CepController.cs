@@ -14,8 +14,8 @@ public class CepController : ControllerBase
     [HttpGet("{cep}")]
     [EndpointDescription("Pesquisa um CEP específico.")]
     [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
-    [ProducesResponseType(typeof(CepResult), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(CepResult), StatusCodes.Status200OK, "application/json")]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest, "application/json")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> GetCepAsync([FromRoute, CepValidation] string cep,
         [FromServices] GetCepQueryHandler handler,
@@ -41,8 +41,8 @@ public class CepController : ControllerBase
     [HttpGet("{state}/{city}/{term}")]
     [EndpointDescription("Pesquisa um CEP a partir do endereço informado.")]
     [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
-    [ProducesResponseType(typeof(List<CepResult>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(List<CepResult>), StatusCodes.Status200OK, "application/json")]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest, "application/json")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> GetCepAsync([FromRoute] string state, [FromRoute] string city,
         [FromRoute] string term, [FromServices] GetCepFromAddressQueryHandler handler,
@@ -58,7 +58,7 @@ public class CepController : ControllerBase
         Response.Headers.CacheControl = $"public, max-age={seconds}";
         Response.Headers.Expires = DateTime.UtcNow.Add(Consts.CepCacheTime).ToString("R");
         Response.Headers["X-Cache-Duration"] = seconds.ToString();
-        
+
         return new OkObjectResult(result);
     }
 }
