@@ -85,7 +85,7 @@ enriquecimento, persistência, auditoria).
 1. Cliente chama `/api/v1/cep/{cep}`.
 2. Middleware Rate Limiting avalia IP.
 3. Validação de CEP (atributo).
-4. Handler tenta obter do cache.
+4. Handler tenta obter do cache (duas camadas).
 5. Cache miss -> ViaCep (Refit + HttpClient + Polly Retry).
 6. Mapeamento DTO externo -> modelo domínio.
 7. Headers de cache-control adicionados.
@@ -156,11 +156,12 @@ Lista: array deste modelo.
 
 - Duração: 24h (`Consts.CepCacheTime`).
 - Chaves: `cache/cep/{cep}` e `cache/cep/address/{uf}/{cidade}/{termo}`.
+- Duas camadas através do HybridCache (MemoryCache + Redis).
 
 ## Rate Limiting
 
 - Política `PerIp20Rps` (20 requisição por segundo por IP) via Fixed Window.
-- Teste de integração cobre saturação inter-endpoints.
+- Teste de integração cobre funcionamento do Rate Limiting.
 
 ## Validações
 
