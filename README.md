@@ -14,6 +14,7 @@ API REST intermediária (camada anti-corrupção) para consultas de CEP utilizan
 - [Principais Decisões Técnicas](#principais-decisões-técnicas)
 - [Fluxo de Requisição](#fluxo-de-requisição)
 - [Endpoints](#endpoints)
+- [Versionamento](#versionamento)
 - [Contratos de Resposta](#contratos-de-resposta)
 - [Resiliência & Confiabilidade](#resiliência--confiabilidade)
 - [Caching](#caching)
@@ -70,7 +71,7 @@ Estilo orientado a camadas / ports & adapters leve. Domínio simples, preparado 
 - Testes: xUnit + Shouldly + WebApplicationFactory (confiança em handlers e pipeline HTTP).
 
 ## Fluxo de Requisição
-1. Cliente chama `/api/cep/{cep}`.
+1. Cliente chama `/api/v1/cep/{cep}`.
 2. Middleware Rate Limiting avalia IP.
 3. Validação de CEP (atributo).
 4. Handler tenta obter do cache.
@@ -91,7 +92,13 @@ Respostas:
 - 429 (rate limit)
 - 5xx (falhas)
 
-### GET /api/cep/{uf}/{cidade}/{termo}
+## Versionamento
+Versão padrão: `v1`.
+
+O MVP possui apenas `v1`, mas a estrutura suporta futuras versões via URL segmentada.
+Como exemplo, foi adicionado para demonstração uma rota v2 que retorna um texto simples.
+
+### GET /api/v1/cep/{uf}/{cidade}/{termo}
 Busca lista de CEPs por UF + cidade + termo parcial.
 
 Respostas:
@@ -102,6 +109,7 @@ Respostas:
 
 OpenAPI em Development:
 - `/openapi/v1.json`
+- `/openapi/v2.json`
 - `/scalar`
 
 ## Contratos de Resposta
