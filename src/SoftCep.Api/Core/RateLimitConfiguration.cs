@@ -9,7 +9,7 @@ public static class RateLimitConfiguration
         services.AddRateLimiter(options =>
         {
             options.RejectionStatusCode = 429;
-            options.AddPolicy("PerIp1Rps", httpContext =>
+            options.AddPolicy("PerIp20Rps", httpContext =>
             {
                 var ip = httpContext.Connection.RemoteIpAddress?.ToString();
                 if (string.IsNullOrEmpty(ip) && httpContext.Request.Headers.TryGetValue("X-Test-IP", out var hdr))

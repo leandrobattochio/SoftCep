@@ -128,7 +128,7 @@ Lista: array deste modelo.
 - Chaves: `cache/cep/{cep}` e `cache/cep/address/{uf}/{cidade}/{termo}`.
 
 ## Rate Limiting
-- Política `PerIp1Rps` (1 requisição por segundo por IP) via Fixed Window.
+- Política `PerIp20Rps` (20 requisição por segundo por IP) via Fixed Window.
 - Teste de integração cobre saturação inter-endpoints.
 
 ## Validações

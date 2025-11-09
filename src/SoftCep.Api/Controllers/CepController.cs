@@ -11,7 +11,7 @@ namespace SoftCep.Api.Controllers;
 [ApiController]
 public class CepController : ControllerBase
 {
-    [EnableRateLimiting("PerIp1Rps")]
+    [EnableRateLimiting("PerIp20Rps")]
     [HttpGet("{cep}")]
     [EndpointDescription("Pesquisa um CEP específico.")]
     [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
@@ -37,7 +37,7 @@ public class CepController : ControllerBase
     }
 
 
-    [EnableRateLimiting("PerIp1Rps")]
+    [EnableRateLimiting("PerIp20Rps")]
     [HttpGet("{state}/{city}/{term}")]
     [EndpointDescription("Pesquisa um CEP a partir do endereço informado.")]
     [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
