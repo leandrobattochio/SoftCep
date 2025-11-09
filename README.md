@@ -92,12 +92,6 @@ Respostas:
 - 429 (rate limit)
 - 5xx (falhas)
 
-## Versionamento
-Versão padrão: `v1`.
-
-O MVP possui apenas `v1`, mas a estrutura suporta futuras versões via URL segmentada.
-Como exemplo, foi adicionado para demonstração uma rota v2 que retorna um texto simples.
-
 ### GET /api/v1/cep/{uf}/{cidade}/{termo}
 Busca lista de CEPs por UF + cidade + termo parcial.
 
@@ -111,6 +105,12 @@ OpenAPI em Development:
 - `/openapi/v1.json`
 - `/openapi/v2.json`
 - `/scalar`
+
+## Versionamento
+Versão padrão: `v1`.
+
+O MVP possui apenas `v1`, mas a estrutura suporta futuras versões via URL segmentada.
+Como exemplo, foi adicionado para demonstração uma rota v2 que retorna um texto simples.
 
 ## Contratos de Resposta
 ```json
