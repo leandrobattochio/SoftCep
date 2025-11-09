@@ -77,7 +77,7 @@ enriquecimento, persistência, auditoria).
 - Caching: HybridCache (API moderna preparada para Redis / distribuído).
 - Rate Limiting: Fixed Window por IP (simplicidade no MVP, fácil troca para Sliding Window).
 - Observabilidade: Serilog (estrutura, enriquecimento, base para OpenTelemetry).
-- Documentação: OpenAPI + Scalar UI (dev-friendly).
+- Documentação: OpenAPI + Scalar UI, por ser uma interface mais avançada e amigável para desenvolvedores.
 - Testes: xUnit + Shouldly + WebApplicationFactory (confiança em handlers e pipeline HTTP).
 
 ## Fluxo de Requisição
