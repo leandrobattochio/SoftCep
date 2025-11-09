@@ -1,0 +1,33 @@
+services:
+
+  app:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    container_name: soft-cep-app
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Production}
+      ASPNETCORE_URLS: "http://+:8080"
+      Infrastructure__ViaCep__BaseUrl: "https://viacep.com.br/ws/"
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - soft-cep-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "-s", "-o", "/dev/null", "-w", "%{http_code}", "http://localhost:8080/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  mecanica-hermes-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local

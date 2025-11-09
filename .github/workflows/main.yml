@@ -1,0 +1,116 @@
+name: Build .NET 9.0
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 9.0
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Restaurar pacotes
+        run: dotnet restore SoftCep.sln
+
+      - name: Build
+        run: dotnet build SoftCep.sln --configuration Release --no-restore
+
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+        
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 9.0
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Verificar Docker
+        run: |
+          docker --version
+          docker ps
+
+      - name: Restaurar pacotes
+        run: dotnet restore SoftCep.sln
+
+      - name: Build
+        run: dotnet build SoftCep.sln --configuration Release --no-restore
+
+      - name: Instalar dependências auxiliares
+        run: |
+          dotnet tool install --global dotnet-reportgenerator-globaltool
+          echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+
+      - name: Executar testes
+        run: |
+          dotnet test SoftCep.sln \
+            --no-build -c Release \
+            --settings coverlet.runsettings \
+            --collect:"XPlat Code Coverage" \
+            --logger:"console;verbosity=normal" \
+            --results-directory ./TestResults/ \
+            -p:CollectCoverage=true \
+            -p:CoverletOutputFormat=cobertura
+
+      - name: Listar arquivos de cobertura gerados
+        if: always()
+        run: |
+          echo "Procurando arquivos de cobertura..."
+          find . -name "*.cobertura.xml" -o -name "coverage.cobertura.xml" || true
+          echo "---"
+          ls -la TestResults/ || true
+          find TestResults/ -type f || true
+
+      - name: Gerar relatório HTML
+        if: always()
+        run: |
+          reportgenerator \
+            -reports:"TestResults/**/coverage.cobertura.xml" \
+            -targetdir:"coverage-report" \
+            -reporttypes:"Html;JsonSummary" \
+            -filefilters:"-*.g.cs;-*Designer.cs;-*Migrations/*.cs" \
+            -title:"Cobertura de Testes"
+
+      - name: Publicar artefato de cobertura HTML
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cobertura-html
+          path: coverage-report
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: TestResults/**/coverage.cobertura.xml
+          fail_ci_if_error: true
+
+      - name: Verificar threshold de cobertura (>=80% line)
+        run: |
+          if [ ! -f coverage-report/Summary.json ]; then
+            echo "Summary.json não encontrado. Falhando." >&2
+            exit 1
+          fi
+          LINE=$(jq -r '.summary.linecoverage // 0' coverage-report/Summary.json)
+          BRANCH=$(jq -r '.summary.branchcoverage // 0' coverage-report/Summary.json)
+          echo "Line Coverage: ${LINE}%"
+          echo "Branch Coverage: ${BRANCH}%"
+          THRESHOLD=80
+          awk -v cov="$LINE" -v thr="$THRESHOLD" 'BEGIN { exit (cov+0 < thr) ? 1 : 0 }'
+          echo "Cobertura mínima de linhas atendida (>= ${THRESHOLD}%)."
