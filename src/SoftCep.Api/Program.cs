@@ -35,6 +35,10 @@ builder.Services.AddApiVersioning(options =>
 });
 
 builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = builder.Configuration.GetConnectionString("Redis");
+});
 builder.Services.AddHybridCache();
 builder.Services.AddHealthChecks();
 builder.Services.AddOptions<ViaCepClientOptions>().BindConfiguration("Infrastructure:ViaCep");

@@ -16,12 +16,12 @@ public sealed class CepController : ControllerBase
     [EnableRateLimiting("PerIp20Rps")]
     [MapToApiVersion("1.0")]
     [HttpGet("{cep}")]
-    [EndpointDescription("Pesquisa um CEP específico.")]
+    [EndpointDescription("Pesquisa um CEP específico. Formatos aceitos: 00000000 ou 00000-000.")]
     [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
     [ProducesResponseType(typeof(CepResult), StatusCodes.Status200OK, "application/json")]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest, "application/json")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> GetCepAsync([FromRoute, CepValidation, MinLength(8), MaxLength(8)] string cep,
+    public async Task<IActionResult> GetCepAsync([FromRoute, CepValidation, MinLength(8), MaxLength(9)] string cep,
         [FromServices] GetCepQueryHandler handler,
         CancellationToken cancellationToken = default)
     {
