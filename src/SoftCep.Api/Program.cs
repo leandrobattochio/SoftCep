@@ -7,6 +7,7 @@ using SoftCep.Api.Application;
 using SoftCep.Api.Core;
 using SoftCep.Api.Infrastructure.ViaCep;
 using System.Text.Json.Serialization;
+using Asp.Versioning;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +21,20 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 });
 
 builder.Services.AddControllers();
+
+builder.Services.AddApiVersioning(options =>
+{
+    options.DefaultApiVersion = new ApiVersion(1, 0);
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.ReportApiVersions = true;
+    options.ApiVersionReader = new UrlSegmentApiVersionReader();
+}).AddApiExplorer(options =>
+{
+    options.GroupNameFormat = "'v'VVV";
+    options.SubstituteApiVersionInUrl = true;
+});
+
+builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
 builder.Services.AddHybridCache();
 builder.Services.AddHealthChecks();
 builder.Services.AddOptions<ViaCepClientOptions>().BindConfiguration("Infrastructure:ViaCep");
@@ -37,7 +52,8 @@ builder.Services.AddRefitClient<IViaCepClient>().ConfigureHttpClient((sp, client
 if (builder.Environment.EnvironmentName != Consts.TestEnvironmentName)
     builder.Services.AddRateLimitConfiguration();
 
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApi("v1");
+builder.Services.AddOpenApi("v2");
 
 var app = builder.Build();
 if (builder.Environment.EnvironmentName != Consts.TestEnvironmentName)
@@ -51,7 +67,11 @@ if (app.Environment.EnvironmentName != Consts.TestEnvironmentName)
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-    app.MapScalarApiReference();
+    app.MapScalarApiReference(options =>
+    {
+        options.AddDocument("SoftCep - v1", "v1", "/openapi/v1.json");
+        options.AddDocument("SoftCep - v2", "v2", "/openapi/v2.json");
+    });
 }
 
 app.UseAuthorization();

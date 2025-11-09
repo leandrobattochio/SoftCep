@@ -17,9 +17,9 @@ public class CepControllerRateLimitTests(RateLimitWebApplicationFactory factory)
         var successResponses = new List<HttpStatusCode>();
         for (var i = 0; i < 10; i++)
         {
-            var rCep = new HttpRequestMessage(HttpMethod.Get, "/api/cep/17209660");
+            var rCep = new HttpRequestMessage(HttpMethod.Get, "/api/v1/cep/17209660");
             rCep.Headers.Add("X-Test-IP", ip);
-            var rAddr = new HttpRequestMessage(HttpMethod.Get, "/api/cep/SP/Sao Paulo/Praca");
+            var rAddr = new HttpRequestMessage(HttpMethod.Get, "/api/v1/cep/SP/Sao Paulo/Praca");
             rAddr.Headers.Add("X-Test-IP", ip);
 
             var responses = await Task.WhenAll(_client.SendAsync(rCep), _client.SendAsync(rAddr));
@@ -30,13 +30,13 @@ public class CepControllerRateLimitTests(RateLimitWebApplicationFactory factory)
         successResponses.Count.ShouldBe(20);
         successResponses.ShouldAllBe(s => s == HttpStatusCode.OK);
 
-        var blocked = new HttpRequestMessage(HttpMethod.Get, "/api/cep/17209660");
+        var blocked = new HttpRequestMessage(HttpMethod.Get, "/api/v1/cep/17209660");
         blocked.Headers.Add("X-Test-IP", ip);
         var blockedResp = await _client.SendAsync(blocked);
         blockedResp.StatusCode.ShouldBe(HttpStatusCode.TooManyRequests);
 
         await Task.Delay(1050);
-        var afterWindow = new HttpRequestMessage(HttpMethod.Get, "/api/cep/SP/Sao Paulo/Praca");
+        var afterWindow = new HttpRequestMessage(HttpMethod.Get, "/api/v1/cep/SP/Sao Paulo/Praca");
         afterWindow.Headers.Add("X-Test-IP", ip);
         var afterResp = await _client.SendAsync(afterWindow);
         afterResp.StatusCode.ShouldBe(HttpStatusCode.OK);

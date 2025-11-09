@@ -25,7 +25,7 @@ public class CepControllerTests(SoftCepWebApplicationFactory factory) : Integrat
     public async Task Cep_ShouldReturnAddress_WhenValid()
     {
         // Act
-        var response = await Client.GetAsync("/api/cep/17209660");
+        var response = await Client.GetAsync("/api/v1/cep/17209660");
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK); // controller returns 200
@@ -44,7 +44,7 @@ public class CepControllerTests(SoftCepWebApplicationFactory factory) : Integrat
         result.Logradouro.ShouldBe("Rua Teste");
         result.Uf.ShouldBe("SP");
 
-        var second = await Client.GetAsync("/api/cep/17209660");
+        var second = await Client.GetAsync("/api/v1/cep/17209660");
         second.StatusCode.ShouldBe(HttpStatusCode.OK);
         GetHeaderValues(second, "X-Cache-Duration").First().ShouldBe(GetHeaderValues(response, "X-Cache-Duration").First());
     }
@@ -53,7 +53,7 @@ public class CepControllerTests(SoftCepWebApplicationFactory factory) : Integrat
     public async Task Cep_ShouldReturn_NoContent_When_NotFound()
     {
         // Act
-        var response = await Client.GetAsync("/api/cep/00000000");
+        var response = await Client.GetAsync("/api/v1/cep/00000000");
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.NoContent);
@@ -66,7 +66,7 @@ public class CepControllerTests(SoftCepWebApplicationFactory factory) : Integrat
     [Fact]
     public async Task Address_ShouldReturn_List_WhenValid()
     {
-        var response = await Client.GetAsync("/api/cep/SP/Sao Paulo/Praca");
+        var response = await Client.GetAsync("/api/v1/cep/SP/Sao Paulo/Praca");
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         HasHeader(response, "Cache-Control").ShouldBeTrue();
         HasHeader(response, "Expires").ShouldBeTrue();
@@ -81,7 +81,7 @@ public class CepControllerTests(SoftCepWebApplicationFactory factory) : Integrat
     [Fact]
     public async Task Address_ShouldReturn_NoContent_When_NoMatches()
     {
-        var response = await Client.GetAsync("/api/cep/SP/Sao Paulo/AlgoQueNaoExiste");
+        var response = await Client.GetAsync("/api/v1/cep/SP/Sao Paulo/AlgoQueNaoExiste");
         response.StatusCode.ShouldBe(HttpStatusCode.NoContent);
         HasHeader(response, "Cache-Control").ShouldBeFalse();
         HasHeader(response, "Expires").ShouldBeFalse();
@@ -91,21 +91,21 @@ public class CepControllerTests(SoftCepWebApplicationFactory factory) : Integrat
     [Fact]
     public async Task Address_ShouldReturn_BadRequest_When_Invalid_State()
     {
-        var response = await Client.GetAsync("/api/cep/XX/Sao Paulo/Praca");
+        var response = await Client.GetAsync("/api/v1/cep/XX/Sao Paulo/Praca");
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
     }
     
     [Fact]
     public async Task Address_ShouldReturn_BadRequest_When_Invalid_City()
     {
-        var response = await Client.GetAsync($"/api/cep/{BrazilianState.SP}/p/ppp");
+        var response = await Client.GetAsync($"/api/v1/cep/{BrazilianState.SP}/p/ppp");
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
     }
     
     [Fact]
     public async Task Address_ShouldReturn_BadRequest_When_Invalid_Term()
     {
-        var response = await Client.GetAsync($"/api/cep/{BrazilianState.SP}/ppp/p");
+        var response = await Client.GetAsync($"/api/v1/cep/{BrazilianState.SP}/ppp/p");
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
     }
 }
