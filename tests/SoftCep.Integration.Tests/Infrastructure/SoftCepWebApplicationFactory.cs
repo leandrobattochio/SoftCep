@@ -24,7 +24,6 @@ public class SoftCepWebApplicationFactory : WebApplicationFactory<SoftCep.Api.Pr
 
             var mock = new Mock<IViaCepClient>();
 
-            // CEP individual setups
             mock.Setup(c => c.GetCepAsync(It.Is<string>(cep => cep != "17209660"), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((string cep, CancellationToken _) => new ViaCepJsonModel(
                     cep,
@@ -58,7 +57,6 @@ public class SoftCepWebApplicationFactory : WebApplicationFactory<SoftCep.Api.Pr
                     "11",
                     "Siafi"));
 
-            // Address search setups
             mock.Setup(c => c.GetCepAsync(
                     It.Is<string>(s => s == "SP"),
                     It.Is<string>(f => f == "Sao Paulo"),
@@ -79,7 +77,7 @@ public class SoftCepWebApplicationFactory : WebApplicationFactory<SoftCep.Api.Pr
                     It.Is<string>(f => f == "Sao Paulo"),
                     It.Is<string>(t => t != "Praca"),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync([]); // empty list case
+                .ReturnsAsync([]);
 
             services.AddSingleton(mock.Object);
         });

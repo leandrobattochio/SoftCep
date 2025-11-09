@@ -87,4 +87,25 @@ public class CepControllerTests(SoftCepWebApplicationFactory factory) : Integrat
         HasHeader(response, "Expires").ShouldBeFalse();
         HasHeader(response, "X-Cache-Duration").ShouldBeFalse();
     }
+
+    [Fact]
+    public async Task Address_ShouldReturn_BadRequest_When_Invalid_State()
+    {
+        var response = await Client.GetAsync("/api/cep/XX/Sao Paulo/Praca");
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+    }
+    
+    [Fact]
+    public async Task Address_ShouldReturn_BadRequest_When_Invalid_City()
+    {
+        var response = await Client.GetAsync($"/api/cep/{BrazilianState.SP}/p/ppp");
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+    }
+    
+    [Fact]
+    public async Task Address_ShouldReturn_BadRequest_When_Invalid_Term()
+    {
+        var response = await Client.GetAsync($"/api/cep/{BrazilianState.SP}/ppp/p");
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+    }
 }

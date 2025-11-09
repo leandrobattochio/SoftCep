@@ -5,6 +5,7 @@ using Shouldly;
 using SoftCep.Api.Application;
 using SoftCep.Api.Infrastructure.ViaCep;
 using Moq;
+using SoftCep.Api.Domain;
 
 namespace SoftCep.Tests.Handlers;
 
@@ -32,13 +33,13 @@ public class GetCepFromAddressQueryHandlerTests
         var handler =
             new GetCepFromAddressQueryHandler(cache, mockClient.Object, NullLogger<GetCepQueryHandler>.Instance);
 
-        var result = await handler.HandleAsync(new GetCepFromAddressQuery("SP", "Sao Paulo", "Praca"),
+        var result = await handler.HandleAsync(new GetCepFromAddressQuery(BrazilianState.SP, "Sao Paulo", "Praca"),
             CancellationToken.None);
 
         result.ShouldNotBeNull();
         result.Count.ShouldBe(2);
 
-        var second = await handler.HandleAsync(new GetCepFromAddressQuery("SP", "Sao Paulo", "Praca"),
+        var second = await handler.HandleAsync(new GetCepFromAddressQuery(BrazilianState.SP, "Sao Paulo", "Praca"),
             CancellationToken.None);
         second.Count.ShouldBe(2);
 
@@ -56,7 +57,7 @@ public class GetCepFromAddressQueryHandlerTests
         var handler =
             new GetCepFromAddressQueryHandler(cache, mockClient.Object, NullLogger<GetCepQueryHandler>.Instance);
 
-        var result = await handler.HandleAsync(new GetCepFromAddressQuery("SP", "Sao Paulo", "Praca"),
+        var result = await handler.HandleAsync(new GetCepFromAddressQuery(BrazilianState.SP, "Sao Paulo", "Praca"),
             CancellationToken.None);
         result.Count.ShouldBe(2);
         mockClient.Verify(c => c.GetCepAsync("SP", "Sao Paulo", "Praca", It.IsAny<CancellationToken>()), Times.Once);

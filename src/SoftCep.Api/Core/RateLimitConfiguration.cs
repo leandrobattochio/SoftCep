@@ -11,7 +11,6 @@ public static class RateLimitConfiguration
             options.RejectionStatusCode = 429;
             options.AddPolicy("PerIp1Rps", httpContext =>
             {
-                // Identifica IP (ou header de teste) para agrupar
                 var ip = httpContext.Connection.RemoteIpAddress?.ToString();
                 if (string.IsNullOrEmpty(ip) && httpContext.Request.Headers.TryGetValue("X-Test-IP", out var hdr))
                 {

@@ -19,9 +19,9 @@ public class CepValidationAttributeTests
     [Theory]
     [InlineData(null)]
     [InlineData("")]
-    [InlineData("1234567")] // 7 digits
-    [InlineData("123456789")] // 9 digits
-    [InlineData("ABCDEF12")] // non numeric
+    [InlineData("1234567")]
+    [InlineData("123456789")]
+    [InlineData("ABCDEF12")]
     public void Invalid_Cep_Should_Return_Error(object? cep)
     {
         var result = _attr.GetValidationResult(cep, new System.ComponentModel.DataAnnotations.ValidationContext(new object()));

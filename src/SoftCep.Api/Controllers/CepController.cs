@@ -1,8 +1,9 @@
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using SoftCep.Api.Application;
 using SoftCep.Api.Core;
 using SoftCep.Api.Domain;
-using Microsoft.AspNetCore.RateLimiting; // added
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace SoftCep.Api.Controllers;
 
@@ -27,7 +28,6 @@ public class CepController : ControllerBase
         if (result == null)
             return NoContent();
 
-        // Add cache headers for successful result
         var seconds = (int)Consts.CepCacheTime.TotalSeconds;
         Response.Headers.CacheControl = $"public, max-age={seconds}";
         Response.Headers.Expires = DateTime.UtcNow.Add(Consts.CepCacheTime).ToString("R");
@@ -44,8 +44,9 @@ public class CepController : ControllerBase
     [ProducesResponseType(typeof(List<CepResult>), StatusCodes.Status200OK, "application/json")]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest, "application/json")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> GetCepAsync([FromRoute] string state, [FromRoute] string city,
-        [FromRoute] string term, [FromServices] GetCepFromAddressQueryHandler handler,
+    public async Task<IActionResult> GetCepAsync([FromRoute] BrazilianState state,
+        [FromRoute, MinLength(3)] string city,
+        [FromRoute, MinLength(3)] string term, [FromServices] GetCepFromAddressQueryHandler handler,
         CancellationToken cancellationToken = default)
     {
         var query = new GetCepFromAddressQuery(state, city, term);

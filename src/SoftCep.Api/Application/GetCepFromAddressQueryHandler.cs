@@ -12,7 +12,8 @@ public class GetCepFromAddressQueryHandler(
 {
     public async Task<List<CepResult>> HandleAsync(GetCepFromAddressQuery query, CancellationToken cancellationToken)
     {
-        var viaCepResults = await GetCepFromCache(query.State, query.City, query.Term, cancellationToken);
+        var stateUf = query.State.ToString(); // enum para sigla
+        var viaCepResults = await GetCepFromCache(stateUf, query.City, query.Term, cancellationToken);
         return viaCepResults.ViaCepToCepResults();
     }
 

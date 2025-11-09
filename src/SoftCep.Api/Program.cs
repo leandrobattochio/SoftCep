@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Options;
 using Polly;
 using Polly.Extensions.Http;
@@ -7,13 +6,18 @@ using Scalar.AspNetCore;
 using SoftCep.Api.Application;
 using SoftCep.Api.Core;
 using SoftCep.Api.Infrastructure.ViaCep;
-using System.Threading.RateLimiting;
+using System.Text.Json.Serialization;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
 if (builder.Environment.EnvironmentName != Consts.TestEnvironmentName)
     builder.AddSerilogConfiguration();
+
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 
 builder.Services.AddControllers();
 builder.Services.AddHybridCache();
@@ -41,7 +45,6 @@ if (builder.Environment.EnvironmentName != Consts.TestEnvironmentName)
 
 app.UseHealthChecks("/healthz");
 
-// Rate limiter middleware somente fora de Testing
 if (app.Environment.EnvironmentName != Consts.TestEnvironmentName)
     app.UseRateLimiter();
 
