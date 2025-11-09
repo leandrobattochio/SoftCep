@@ -13,26 +13,32 @@ public class CepControllerRateLimitTests(RateLimitWebApplicationFactory factory)
     public async Task Should_RateLimit_Both_Routes_Per_IP()
     {
         const string ip = "9.9.9.9";
-        var r1 = new HttpRequestMessage(HttpMethod.Get, "/api/cep/17209660");
-        r1.Headers.Add("X-Test-IP", ip);
-        var resp1 = await _client.SendAsync(r1);
-        resp1.StatusCode.ShouldBe(HttpStatusCode.OK);
 
-        var r2 = new HttpRequestMessage(HttpMethod.Get, "/api/cep/17209660");
-        r2.Headers.Add("X-Test-IP", ip);
-        var resp2 = await _client.SendAsync(r2);
-        resp2.StatusCode.ShouldBe(HttpStatusCode.TooManyRequests);
+        var successResponses = new List<HttpStatusCode>();
+        for (var i = 0; i < 10; i++)
+        {
+            var rCep = new HttpRequestMessage(HttpMethod.Get, "/api/cep/17209660");
+            rCep.Headers.Add("X-Test-IP", ip);
+            var rAddr = new HttpRequestMessage(HttpMethod.Get, "/api/cep/SP/Sao Paulo/Praca");
+            rAddr.Headers.Add("X-Test-IP", ip);
 
-        await Task.Delay(1100);
+            var responses = await Task.WhenAll(_client.SendAsync(rCep), _client.SendAsync(rAddr));
+            successResponses.Add(responses[0].StatusCode);
+            successResponses.Add(responses[1].StatusCode);
+        }
 
-        var r3 = new HttpRequestMessage(HttpMethod.Get, "/api/cep/SP/Sao Paulo/Praca");
-        r3.Headers.Add("X-Test-IP", ip);
-        var resp3 = await _client.SendAsync(r3);
-        resp3.StatusCode.ShouldBe(HttpStatusCode.OK);
+        successResponses.Count.ShouldBe(20);
+        successResponses.ShouldAllBe(s => s == HttpStatusCode.OK);
 
-        var r4 = new HttpRequestMessage(HttpMethod.Get, "/api/cep/SP/Sao Paulo/Praca");
-        r4.Headers.Add("X-Test-IP", ip);
-        var resp4 = await _client.SendAsync(r4);
-        resp4.StatusCode.ShouldBe(HttpStatusCode.TooManyRequests);
+        var blocked = new HttpRequestMessage(HttpMethod.Get, "/api/cep/17209660");
+        blocked.Headers.Add("X-Test-IP", ip);
+        var blockedResp = await _client.SendAsync(blocked);
+        blockedResp.StatusCode.ShouldBe(HttpStatusCode.TooManyRequests);
+
+        await Task.Delay(1050);
+        var afterWindow = new HttpRequestMessage(HttpMethod.Get, "/api/cep/SP/Sao Paulo/Praca");
+        afterWindow.Headers.Add("X-Test-IP", ip);
+        var afterResp = await _client.SendAsync(afterWindow);
+        afterResp.StatusCode.ShouldBe(HttpStatusCode.OK);
     }
 }

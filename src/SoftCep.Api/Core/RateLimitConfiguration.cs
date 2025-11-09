@@ -20,7 +20,7 @@ public static class RateLimitConfiguration
                 ip ??= "unknown";
                 return RateLimitPartition.GetFixedWindowLimiter(ip, _ => new FixedWindowRateLimiterOptions
                 {
-                    PermitLimit = 1,
+                    PermitLimit = 20,
                     Window = TimeSpan.FromSeconds(1),
                     QueueLimit = 0,
                     AutoReplenishment = true
