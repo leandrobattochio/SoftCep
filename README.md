@@ -1,4 +1,4 @@
-[![codecov](https://codecov.io/github/leandrobattochio/SoftCep/graph/badge.svg?token=5GEA6H1B0B)](https://codecov.io/github/fiap-challenge-13soat/oficina-fase-01)
+[![codecov](https://codecov.io/github/leandrobattochio/SoftCep/graph/badge.svg?token=5GEA6H1B0B)](https://codecov.io/github/leandrobattochio/SoftCep)
 ![build pipeline](https://github.com/leandrobattochio/SoftCep/actions/workflows/main.yml/badge.svg)
 
 
