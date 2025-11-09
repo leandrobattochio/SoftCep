@@ -39,11 +39,6 @@ jobs:
         with:
           dotnet-version: '9.0.x'
 
-      - name: Verificar Docker
-        run: |
-          docker --version
-          docker ps
-
       - name: Restaurar pacotes
         run: dotnet restore SoftCep.sln
 
