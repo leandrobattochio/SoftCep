@@ -26,7 +26,7 @@ resiliência, padronização de contrato, caching, limitação de requisições.
 - [Observabilidade](#observabilidade)
 - [Scalar](#scalar)
 - [Como Executar](#como-executar)
-- [Configurações](#configurações)a
+- [Configurações](#configurações)
 
 ## Contexto do Problema
 
