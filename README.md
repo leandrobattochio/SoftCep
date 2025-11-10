@@ -220,12 +220,12 @@ dotnet run
 
 ### Subindo o Docker Compose
 
-1- Tenha Docker instalado e rodando no seu ambiente.
-
-2- Na raiz do projeto execute o comando
+- Tenha Docker instalado e rodando no seu ambiente.
+- Na raiz do projeto execute o comando:
 
 ```cmd
-docker compose -f .\docker-compose\docker-compose-dev.yaml up -d
+cd docker-compose
+docker compose up -d
 ```
 
 A API fica disponível na porta `8080`. Kibana na porta `5601`.
