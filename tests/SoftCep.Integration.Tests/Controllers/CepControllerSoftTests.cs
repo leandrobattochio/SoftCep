@@ -6,7 +6,7 @@ using SoftCep.Integration.Tests.Infrastructure;
 
 namespace SoftCep.Integration.Tests.Controllers;
 
-public class CepControllerTests(SoftCepWebApplicationFactory factory) : IntegrationTestBase(factory)
+public class CepControllerSoftTests(SoftCepWebApplicationFactory factory) : IntegrationSoftTestBase(factory)
 {
     private static bool HasHeader(HttpResponseMessage response, string name)
     {

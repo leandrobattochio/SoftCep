@@ -11,7 +11,7 @@ namespace SoftCep.Api.Controllers.v1;
 [ApiVersion("1.0")]
 [Route("api/v{version:apiVersion}/[controller]")]
 [ApiController]
-public sealed class CepController : ControllerBase
+public sealed class CepControllerSoft : ControllerBase
 {
     [EnableRateLimiting("PerIp20Rps")]
     [MapToApiVersion("1.0")]
