@@ -6,11 +6,28 @@ using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using SoftCep.Api.Core;
 using SoftCep.Api.Infrastructure.ViaCep;
+using Testcontainers.Redis;
 
 namespace SoftCep.Integration.Tests.Infrastructure;
 
-public class SoftCepWebApplicationFactory : WebApplicationFactory<SoftCep.Api.Program>
+public class SoftCepWebApplicationFactory : WebApplicationFactory<SoftCep.Api.Program>, IAsyncLifetime
 {
+    private readonly RedisContainer _redisContainer = new RedisBuilder()
+        .WithImage("redis:latest")
+        .WithCleanUp(true)
+        .Build();
+
+    public async Task InitializeAsync()
+    {
+        await _redisContainer.StartAsync();
+    }
+
+    public new async Task DisposeAsync()
+    {
+        await _redisContainer.DisposeAsync();
+        await base.DisposeAsync();
+    }
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseEnvironment(Consts.TestEnvironmentName);
@@ -19,7 +36,7 @@ public class SoftCepWebApplicationFactory : WebApplicationFactory<SoftCep.Api.Pr
         {
             config.AddInMemoryCollection(new Dictionary<string, string?>
             {
-                ["ConnectionStrings__Redis"] = "redis:6379"
+                ["ConnectionStrings__Redis"] = _redisContainer.GetConnectionString()
             });
         });
 
