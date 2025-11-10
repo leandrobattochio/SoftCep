@@ -245,7 +245,7 @@ curl http://localhost:5266/api/v1/cep/01001000
 
 ## Configurações
 
-`appsettings.json` esperado com a URL do ViaCep e conexão Redis:
+`appsettings.json` esperado com a URL do ViaCep, Redis e Elasticsearch:
 
 ```json
 {
@@ -255,6 +255,9 @@ curl http://localhost:5266/api/v1/cep/01001000
   "Infrastructure": {
     "ViaCep": {
       "BaseUrl": "https://viacep.com.br/ws"
+    },
+    "Elasticsearch": {
+      "Url": "http://localhost:9200"
     }
   }
 }

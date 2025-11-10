@@ -1,5 +1,4 @@
 using System.Diagnostics.CodeAnalysis;
-using Elastic.Channels;
 using Elastic.Ingest.Elasticsearch;
 using Elastic.Ingest.Elasticsearch.DataStreams;
 using Elastic.Serilog.Sinks;

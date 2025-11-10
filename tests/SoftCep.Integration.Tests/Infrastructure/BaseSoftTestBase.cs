@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc.Testing;
-using Testcontainers.Redis;
 
 namespace SoftCep.Integration.Tests.Infrastructure;
 
