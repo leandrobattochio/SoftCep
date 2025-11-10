@@ -220,10 +220,10 @@ dotnet run
 
 ### Subindo o Docker Compose
 
-- Tenha Docker instalado e rodando no seu ambiente.
-- Na raiz do projeto execute o comando:
+- Tenha Docker instalado e rodando no seu ambiente. 
+- Na raiz do projeto execute os comandos:
 
-```cmd
+```bash
 cd docker-compose
 docker compose up -d
 ```
