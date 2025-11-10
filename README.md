@@ -219,6 +219,18 @@ cd src/SoftCep.Api
 dotnet run
 ```
 
+### Subindo o Docker Compose
+
+1- Tenha Docker instalado e rodando no seu ambiente.
+
+2- Na raiz do projeto execute o comando
+
+```cmd
+docker compose -f .\docker-compose\docker-compose-dev.yaml up -d
+```
+
+A API fica disponível na porta `8080`. Kibana na porta `5601`.
+
 Documentação:
 
 - http://localhost:5266/scalar (Somente em development)
