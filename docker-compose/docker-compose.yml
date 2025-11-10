@@ -29,9 +29,6 @@ services:
       Infrastructure__ViaCep__BaseUrl: "https://viacep.com.br/ws/"
     ports:
       - "8080:8080"
-    depends_on:
-      postgres:
-        condition: service_healthy
     networks:
       - soft-cep-network
     restart: unless-stopped
