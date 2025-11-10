@@ -26,7 +26,7 @@ resiliência, padronização de contrato, caching, limitação de requisições.
 - [Observabilidade](#observabilidade)
 - [Scalar](#scalar)
 - [Como Executar](#como-executar)
-- [Configurações](#configurações)
+- [Configurações](#configurações)a
 
 ## Contexto do Problema
 
@@ -52,7 +52,7 @@ degradando a experiência dos usuários e aumentando a complexidade de tratament
 - Rate Limiting por IP nas duas rotas (20 req/seg).
 - Validação de CEP (8 ou 9 dígitos obrigatórios). Formatos aceitos: `00000000` ou `00000-000`.
 - Documentação OpenAPI + UI (Scalar).
-- Testes unitários e de integração (incluindo rate limiting e testcontainers).
+- Testes unitários e de integração com testcontainers simulando cache Redis.
 - Logging estruturado com Serilog. Nível mínimo `Debug` em development e `Information` em produção.
 
 ## Arquitetura & Camadas
@@ -165,7 +165,6 @@ Lista: array deste modelo.
 ## Rate Limiting
 
 - Política `PerIp20Rps` (20 requisição por segundo por IP) via Fixed Window.
-- Teste de integração cobre funcionamento do Rate Limiting.
 
 ## Validações
 
@@ -180,7 +179,7 @@ Lista: array deste modelo.
 ## Testes
 
 - Unitários (`SoftCep.Tests`): handlers, mapeamento, validações.
-- Integração (`SoftCep.Integration.Tests`): endpoints, rate limiting. Usando TestContainers para simular container do
+- Integração (`SoftCep.Integration.Tests`): endpoints. Usando TestContainers para simular container do
   Redis para mimetizar fielmente o ambiente de produção.
 - Cobertura: coverlet (`dotnet test /p:CollectCoverage=true`).
 
