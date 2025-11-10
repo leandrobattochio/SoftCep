@@ -24,10 +24,13 @@ public static class SerilogConfiguration
 
         if (builder.Environment.IsProduction())
         {
+            var url = builder.Configuration.GetValue<string>("Infrastructure:Elasticsearch:Url") ??
+                      throw new ArgumentException("Invalid Elasticsearch Url");
+
             builder.Host.UseSerilog((ctx, _, lc) => lc
                 .ReadFrom.Configuration(ctx.Configuration)
                 .Enrich.WithProperty("ApplicationName", "SoftCep")
-                .WriteTo.Elasticsearch([new Uri("http://elasticsearch:9200")], opts =>
+                .WriteTo.Elasticsearch([new Uri(url)], opts =>
                 {
                     opts.DataStream = new DataStreamName("logs", "softcep-api", "production");
                     opts.BootstrapMethod = BootstrapMethod.None;
