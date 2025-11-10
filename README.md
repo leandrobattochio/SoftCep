@@ -42,16 +42,17 @@ degradando a experiência dos usuários e aumentando a complexidade de tratament
 
 ## Escopo Entregue
 
-- .NET 9
+- .NET 9 e C# 13.
 - Endpoints: consulta por CEP e por endereço.
+- Healthcheck no endpoint `/healthz`.
 - Integração com ViaCep usando Refit.
 - Retry com Polly (exponencial) até 5 tentativas.
-- Cache em memória (HybridCache) pronto para expansão distribuída.
-- Rate Limiting por IP (1 req/seg, demonstrativo de controle).
-- Validação de CEP (8 dígitos obrigatórios).
-- Documentação OpenAPI + UI (Scalar) em Development.
-- Testes unitários e de integração (incluindo rate limiting).
-- Logging estruturado com Serilog.
+- Cache em memória (HybridCache) + Redis.
+- Rate Limiting por IP nas duas rotas (20 req/seg).
+- Validação de CEP (8 ou 9 dígitos obrigatórios). Formatos aceitos: `00000000` ou `00000-000`.
+- Documentação OpenAPI + UI (Scalar).
+- Testes unitários e de integração (incluindo rate limiting e testcontainers).
+- Logging estruturado com Serilog. Nível mínimo `Debug` em development e `Information` em produção.
 
 ## Arquitetura & Camadas
 
@@ -65,8 +66,7 @@ SoftCep.Api
  └─ Program.cs         -> Composition Root (DI + pipeline)
 ```
 
-Estilo orientado a camadas / ports & adapters leve. Domínio simples, preparado para futura evolução (ex: normalização,
-enriquecimento, persistência, auditoria).
+Aplicação monolítica, orientada a camadas com CQRS básico (apenas queries).
 
 ## Principais Decisões Técnicas
 
@@ -94,7 +94,7 @@ enriquecimento, persistência, auditoria).
 
 ## Endpoints
 
-### GET /api/cep/{cep}
+### GET /api/v1/cep/{cep}
 
 Consulta um CEP específico.
 
@@ -132,6 +132,9 @@ Como exemplo, foi adicionado para demonstração uma rota v2 que retorna um text
 
 ## Contratos de Resposta
 
+O modelo `CepResult` é construído a partir da resposta do ViaCep, dessa forma ficamos independentes do retorno do
+ViaCep.
+
 ```json
 {
   "cep": "01001-000",
@@ -165,7 +168,7 @@ Lista: array deste modelo.
 
 ## Validações
 
-- Atributo `CepValidationAttribute` (8 dígitos numéricos).
+- Atributo `CepValidationAttribute` para validação do formato do CEP.
 
 ## Observabilidade & Logging
 
@@ -176,13 +179,15 @@ Lista: array deste modelo.
 ## Testes
 
 - Unitários (`SoftCep.Tests`): handlers, mapeamento, validações.
-- Integração (`SoftCep.Integration.Tests`): endpoints, rate limiting.
+- Integração (`SoftCep.Integration.Tests`): endpoints, rate limiting. Usando TestContainers para simular container do
+  Redis para mimetizar fielmente o ambiente de produção.
 - Cobertura: coverlet (`dotnet test /p:CollectCoverage=true`).
 
 ## Scalar
 
 Todos os endpoints estão completamente documentados na UI do Scalar, com status de resposta, payload de entrada e saída,
-bem como o enum `state` pode ser facilmente visualizado quais são as opções válidas.
+bem como o enum `state` pode ser facilmente visualizado quais são as opções válidas. Também é possível alterar entre
+versões da API.
 
 ![endpoint-1](./docs/doc1.png)
 ![endpoint-2](./docs/doc2.png)
@@ -206,21 +211,25 @@ dotnet run
 
 Documentação:
 
-- http://localhost:5266/scalar
+- http://localhost:5266/scalar (Somente em development)
 - http://localhost:5266/openapi/v1.json
+- http://localhost:5266/openapi/v2.json
 
 Exemplo:
 
 ```bash
-curl http://localhost:5266/api/cep/01001000
+curl http://localhost:5266/api/v1/cep/01001000
 ```
 
 ## Configurações
 
-`appsettings.json` esperado com a URL do ViaCep:
+`appsettings.json` esperado com a URL do ViaCep e conexão Redis:
 
 ```json
 {
+  "ConnectionStrings": {
+    "Redis": "localhost:6379"
+  },
   "Infrastructure": {
     "ViaCep": {
       "BaseUrl": "https://viacep.com.br/ws"
