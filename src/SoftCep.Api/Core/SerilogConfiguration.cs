@@ -1,3 +1,7 @@
+using Elastic.Channels;
+using Elastic.Ingest.Elasticsearch;
+using Elastic.Ingest.Elasticsearch.DataStreams;
+using Elastic.Serilog.Sinks;
 using Serilog;
 
 namespace SoftCep.Api.Core;
@@ -7,16 +11,33 @@ public static class SerilogConfiguration
     public static void AddSerilogConfiguration(this WebApplicationBuilder builder)
     {
         Log.Logger = new LoggerConfiguration()
-            .WriteTo.Console()
+            .ReadFrom.Configuration(builder.Configuration)
+            .Enrich.WithProperty("ApplicationName", "SoftCep")
             .CreateBootstrapLogger();
 
         Log.Information("Application starting up in {EnvironmentName} mode", builder.Environment.EnvironmentName);
 
+
         builder.Logging.ClearProviders();
 
-        builder.Host.UseSerilog((ctx, serviceProvider, lc) => lc
-            .ReadFrom.Configuration(ctx.Configuration)
-            .Enrich.WithProperty("ApplicationName", "SoftCep"));
+        if (builder.Environment.IsProduction())
+        {
+            builder.Host.UseSerilog((ctx, _, lc) => lc
+                .ReadFrom.Configuration(ctx.Configuration)
+                .Enrich.WithProperty("ApplicationName", "SoftCep")
+                .WriteTo.Elasticsearch([new Uri("http://elasticsearch:9200")], opts =>
+                {
+                    opts.DataStream = new DataStreamName("logs", "softcep-api", "production");
+                    opts.BootstrapMethod = BootstrapMethod.None;
+                })
+            );
+        }
+        else
+        {
+            builder.Host.UseSerilog((ctx, _, lc) => lc
+                .ReadFrom.Configuration(ctx.Configuration)
+                .Enrich.WithProperty("ApplicationName", "SoftCep"));
+        }
     }
 
     public static void UseSerilogConfiguration(this WebApplication app)

@@ -23,6 +23,7 @@ resiliência, padronização de contrato, caching, limitação de requisições.
 - [Validações](#validações)
 - [Observabilidade & Logging](#observabilidade--logging)
 - [Testes](#testes)
+- [Observabilidade](#observabilidade)
 - [Scalar](#scalar)
 - [Como Executar](#como-executar)
 - [Configurações](#configurações)
@@ -182,6 +183,15 @@ Lista: array deste modelo.
 - Integração (`SoftCep.Integration.Tests`): endpoints, rate limiting. Usando TestContainers para simular container do
   Redis para mimetizar fielmente o ambiente de produção.
 - Cobertura: coverlet (`dotnet test /p:CollectCoverage=true`).
+
+## Observabilidade
+
+Adicionado `Elasticsearch`, `Kibana` e `Heartbeat` para monitoramento da saúde da aplicação. Através do
+`AddAllElasticApm` é
+construído toda a observabilidade do APM da aplicação. Da mesma forma, através do Serilog os logs são enviados para o
+Elasticsearch. Através do `Heartbeat`, monitoramos a saúde da nossa API. Tudo facilmente visualizado através da
+interface
+do Kibana.
 
 ## Scalar
 

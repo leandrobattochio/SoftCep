@@ -1,0 +1,9 @@
+﻿FROM docker.elastic.co/beats/heartbeat:8.15.0
+
+# Troca para root para poder alterar permissões
+USER root
+COPY heartbeat.yml /usr/share/heartbeat/heartbeat.yml
+RUN chmod go-w /usr/share/heartbeat/heartbeat.yml
+
+# Retorna ao usuário padrão do container (boa prática de segurança)
+USER heartbeat

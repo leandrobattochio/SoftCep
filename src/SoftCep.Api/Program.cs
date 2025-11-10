@@ -15,6 +15,9 @@ var builder = WebApplication.CreateBuilder(args);
 if (builder.Environment.EnvironmentName != Consts.TestEnvironmentName)
     builder.AddSerilogConfiguration();
 
+if (builder.Environment.IsProduction())
+    builder.Services.AddAllElasticApm();
+
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());

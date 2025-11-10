@@ -1,0 +1,12 @@
+﻿heartbeat.monitors:
+  - type: http
+    id: softcep-app
+    name: SoftCep API Health
+    urls: ["http://app:8080/healthz"]
+    schedule: '@every 30s'
+
+output.elasticsearch:
+  hosts: ["elasticsearch:9200"]
+
+setup.kibana:
+  host: "kibana:5601"
