@@ -8,7 +8,7 @@ public static class RateLimitConfiguration
     {
         services.AddRateLimiter(options =>
         {
-            options.RejectionStatusCode = 429;
+            options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
             options.AddPolicy("PerIp20Rps", httpContext =>
             {
                 var ip = httpContext.Connection.RemoteIpAddress?.ToString();
@@ -20,8 +20,8 @@ public static class RateLimitConfiguration
                 ip ??= "unknown";
                 return RateLimitPartition.GetFixedWindowLimiter(ip, _ => new FixedWindowRateLimiterOptions
                 {
-                    PermitLimit = 20,
-                    Window = TimeSpan.FromSeconds(1),
+                    PermitLimit = Consts.MaxRequestPerIp,
+                    Window = Consts.RequestWindow,
                     QueueLimit = 0,
                     AutoReplenishment = true
                 });
