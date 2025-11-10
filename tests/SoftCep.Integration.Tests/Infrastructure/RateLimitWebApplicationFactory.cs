@@ -31,7 +31,7 @@ public class RateLimitWebApplicationFactory : WebApplicationFactory<SoftCep.Api.
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         base.ConfigureWebHost(builder);
-        builder.UseEnvironment(Consts.ProductionEnvironmentName);
+        builder.UseEnvironment(Consts.TestEnvironmentName);
         
         builder.ConfigureAppConfiguration(config =>
         {
