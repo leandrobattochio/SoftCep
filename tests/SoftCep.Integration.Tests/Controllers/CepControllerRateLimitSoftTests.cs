@@ -34,7 +34,7 @@ public class CepControllerRateLimitSoftTests(RateLimitWebApplicationFactory fact
     [Fact]
     public async Task Should_RateLimit_SearchByTerm_Per_IP()
     {
-        const string ip = "9.9.9.9";
+        const string ip = "8.8.8.8";
 
         var initialRequests = new List<HttpRequestMessage>();
         for (var i = 0; i < 21; i++)
