@@ -9,7 +9,7 @@ namespace SoftCep.Api.Controllers.v2;
 [ApiVersion("2.0")]
 [Route("api/v{version:apiVersion}/[controller]")]
 [ApiController]
-public sealed class CepControllerSoft : ControllerBase
+public sealed class CepController : ControllerBase
 {
     [MapToApiVersion("2.0")]
     [HttpGet]
