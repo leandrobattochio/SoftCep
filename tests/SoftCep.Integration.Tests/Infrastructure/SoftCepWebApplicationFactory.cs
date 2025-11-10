@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Moq;
 using SoftCep.Api.Core;
 using SoftCep.Api.Infrastructure.ViaCep;
@@ -52,6 +54,16 @@ public class SoftCepWebApplicationFactory : WebApplicationFactory<SoftCep.Api.Pr
             CreateMocks(mock);
 
             services.AddSingleton(mock.Object);
+        });
+        
+        builder.ConfigureTestServices(services =>
+        {
+            services.RemoveAll(typeof(IDistributedCache));
+
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = _redisContainer.GetConnectionString();
+            });
         });
     }
 

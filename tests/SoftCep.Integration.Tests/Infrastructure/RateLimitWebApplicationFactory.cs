@@ -1,6 +1,10 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using SoftCep.Api.Core;
 using Testcontainers.Redis;
 
@@ -34,6 +38,16 @@ public class RateLimitWebApplicationFactory : WebApplicationFactory<SoftCep.Api.
             config.AddInMemoryCollection(new Dictionary<string, string?>
             {
                 ["ConnectionStrings__Redis"] = _redisContainer.GetConnectionString()
+            });
+        });
+
+        builder.ConfigureTestServices(services =>
+        {
+            services.RemoveAll(typeof(IDistributedCache));
+
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = _redisContainer.GetConnectionString();
             });
         });
     }
