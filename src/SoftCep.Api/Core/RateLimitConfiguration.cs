@@ -1,7 +1,9 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.RateLimiting;
 
 namespace SoftCep.Api.Core;
 
+[ExcludeFromCodeCoverage]
 public static class RateLimitConfiguration
 {
     public static void AddRateLimitConfiguration(this IServiceCollection services)
