@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Elastic.Channels;
 using Elastic.Ingest.Elasticsearch;
 using Elastic.Ingest.Elasticsearch.DataStreams;
@@ -6,6 +7,7 @@ using Serilog;
 
 namespace SoftCep.Api.Core;
 
+[ExcludeFromCodeCoverage]
 public static class SerilogConfiguration
 {
     public static void AddSerilogConfiguration(this WebApplicationBuilder builder)
