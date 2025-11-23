@@ -1,5 +1,9 @@
+using NetEscapades.EnumGenerators;
+
 namespace SoftCep.Api.Domain;
 
+
+[EnumExtensions]
 public enum BrazilianState
 {
     AC = 1,
